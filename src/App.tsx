@@ -6,7 +6,7 @@ function App() {
   return (
     <div className=''>
       <Filters />
-      <div className='flex justify-around flex-wrap'>
+      <div className='device flex justify-around flex-wrap sm:flex-nowrap sm:overflow-x-auto mx-8 sm:border border-[#2a2a49]'>
         <Device />
         <Device />
         <Device />

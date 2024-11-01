@@ -40,3 +40,20 @@
 .read-the-docs {
   color: #888;
 }
+.device::-webkit-scrollbar {
+  width: 5px; /* Ancho del scrollbar */
+}
+/* Estilo de la "track" (pista de fondo) */
+.device::-webkit-scrollbar-track {
+  background: #22223c; /* Color de fondo */
+  border-radius: 2px;
+}
+
+.device::-webkit-scrollbar-thumb {
+  background-color: #363554; /* Color del deslizador */
+  border-radius: 2px;
+  border: 1px solid #363554; /* Espacio alrededor del deslizador */
+}
+.device::-webkit-scrollbar-thumb:hover {
+  background-color: #363554;
+}
