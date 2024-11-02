@@ -10,7 +10,7 @@ export const Filters = () => {
         </select>
       </div>
       <div>
-        <p className='font-extrabold text-[#7474A2]'>Order by</p>
+        <p className='font-extrabold text-[#7474A2]'>Search</p>
         <select className='h-8 w-32 sm:w-48 bg-[#363554]'>
           <option value='name'>Name</option>
           <option value='ram'>RAM</option>
