@@ -1,20 +1,25 @@
 import { useState } from 'react'
-import { useLocalIP } from '../hooks/useLocalIP'
 
-export const Header = () => {
-  const ip = useLocalIP()
-  const [isConnected, setIsConnected] = useState(false)
+interface HeaderProps {
+  ip: string | null
+  handleConnect: (data: boolean) => void
+  isConnected: boolean
+}
 
-  const handleConnectToServer = () => {
-    isConnected
-      ? alert('Connecting to server...') //TODO
-      : alert('Disconnecting from server...') //TODO
+export const Header: React.FC<HeaderProps> = ({
+  ip,
+  handleConnect,
+  isConnected,
+}) => {
+  // const [isConnected, setIsConnected] = useState<boolean>(false)
 
-    if (isConnected) {
-    }
+  const handleClick = () => {
+    console.log('Header:  Cambia a ' + !isConnected)
+    handleConnect(!isConnected)
 
-    setIsConnected(!isConnected)
+    //console.log(ip)
   }
+
   return (
     <div className='w-full bg-[#363554] flex justify-around 2xl:h-24 xl:h-20 h-12 items-center shadow-lg'>
       <div className='flex items-center'>
@@ -38,14 +43,14 @@ export const Header = () => {
 
       {!isConnected ? (
         <button
-          onClick={handleConnectToServer}
+          onClick={handleClick}
           className='xl:border-4  border-2 border-green-500 2xl:p-6 xl:p-3 p-2 rounded-full font-extrabold '
         >
           On
         </button>
       ) : (
         <button
-          onClick={handleConnectToServer}
+          onClick={handleClick}
           className='xl:border-4  border-2 border-red-500 2xl:p-6 xl:p-3 p-2 rounded-full font-extrabold '
         >
           Off
