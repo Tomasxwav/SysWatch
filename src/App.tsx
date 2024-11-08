@@ -2,57 +2,33 @@ import './App.css'
 import { Device } from './components/Device'
 import { Filters } from './components/Filters'
 import { Header } from './components/Header'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useLocalIP } from './hooks/useLocalIP'
-// import { useIP } from './context/IPContext'
+import { useScan } from './hooks/useScan'
 
 function App() {
   const ip = useLocalIP()
 
   const [isConnected, setIsConnected] = useState<boolean>(false)
-  const [servers, setServers] = useState<string[]>([])
   const [status, setStatus] = useState('...')
+  const servers = useScan(isConnected)
 
-  const foundServers: string[] = []
-
+  useEffect(() => {
+    if (servers.length > 0) {
+      setStatus('Servers encontrados: ' + servers)
+    }
+  }, [servers])
+  console.log(servers)
   const handleConnection = async (data: boolean) => {
     if (data) {
       setStatus('Buscando servidores...')
-      try {
-        // Llama al proceso principal para escanear la red
-        const scanFetch = await window.electron
-          .scanNetwork()
-          .then((result: string[]) => {
-            foundServers.push(result.toString())
-            setStatus('Servidores encontrados: ')
-          })
-          .catch((err: Error) => {
-            setStatus('Error escaneando servidores: ' + err)
-            console.log('Error al escanear la red:', err)
-          })
-        console.log(foundServers)
-        setServers(foundServers)
-
-        if (foundServers.length > 0) {
-          setStatus('Servidores encontrados: ')
-          // Enviar mensaje a cada servidor encontrado
-          /* foundServers.forEach(async (server) => {
-          await sendMessageToServer(server, {
-            message: 'Hola desde Electron + React',
-          })
-        }) 
-        setStatus('Mensajes enviados a todos los servidores.')*/
-        } else {
-          setStatus('No se encontraron servidores.')
-        }
-      } catch (error) {
-        console.error('Error buscando servidores:', error)
-        setStatus('Error durante la búsqueda.')
-      }
+      setIsConnected(data)
     } else {
       setIsConnected(data)
+      setStatus('Desconectado')
     }
   }
+
   return (
     <div className=''>
       <Header
@@ -60,12 +36,14 @@ function App() {
         handleConnect={handleConnection}
         isConnected={isConnected}
       />
-      {isConnected ? <p>Si</p> : <p>No</p>}
+
       <Filters />
+      {isConnected ? <p>Conectado: Si</p> : <p>Conectado: No</p>}
+      {<p>{status}</p>}
       <div className='device flex justify-around flex-wrap sm:flex-nowrap sm:overflow-x-auto mx-8 sm:border border-[#2a2a49]'>
-        <Device />
-        <Device />
-        <Device />
+        {servers.map((server, index) => (
+          <Device key={index} ip={server} />
+        ))}
         <Device />
         <Device />
       </div>

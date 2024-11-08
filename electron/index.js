@@ -57,7 +57,6 @@ function checkPort(ip, port) {
     socket.setTimeout(1000)
 
     socket.on('connect', () => {
-      socket.write('¡Bienvenido al servidor!\n')
       socket.end()
       resolve({ ip, port, status: 'open' })
     })

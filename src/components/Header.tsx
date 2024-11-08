@@ -11,13 +11,8 @@ export const Header: React.FC<HeaderProps> = ({
   handleConnect,
   isConnected,
 }) => {
-  // const [isConnected, setIsConnected] = useState<boolean>(false)
-
   const handleClick = () => {
-    console.log('Header:  Cambia a ' + !isConnected)
     handleConnect(!isConnected)
-
-    //console.log(ip)
   }
 
   return (
