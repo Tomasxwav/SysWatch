@@ -46,9 +46,11 @@ const server = net.createServer((socket) => {
 })
 
 /*El servidor se inicia y escucha en el puerto 8080*/
-server.listen(8080, () => {
-  console.log('Servidor TCP escuchando en el puerto 8080...')
-})
+function openServer(port = 8080) {
+  server.listen(port, () => {
+    console.log('Servidor TCP escuchando en el puerto ' + port + '...')
+  })
+}
 
 /* Función para verificar si un puerto está abierto o cerrado */
 function checkPort(ip, port) {
@@ -87,7 +89,6 @@ async function scanNetwork(port = 8080) {
     const ip = `${subnet}.${i}`
     promises.push(checkPort(ip, port))
   }
-
   try {
     const results = await Promise.allSettled(promises) // Espera todas las promesas
     results.forEach((result) => {
@@ -105,7 +106,6 @@ async function scanNetwork(port = 8080) {
   } catch (error) {
     console.error('Error al verificar puertos:', error)
   }
-
   return serverList
 }
 
@@ -125,6 +125,9 @@ function getLocalIPAddress() {
 ipcMain.handle('scan-network', async () => {
   const result = await scanNetwork()
   return result
+})
+ipcMain.handle('open-server', async (event, port) => {
+  openServer(port)
 })
 
 app.whenReady().then(createWindow)

@@ -5,4 +5,8 @@ contextBridge.exposeInMainWorld('electron', {
     const result = await ipcRenderer.invoke('scan-network')
     return result
   },
+  openServer: async (port = 8080) => {
+    const result = await ipcRenderer.invoke('open-server', port)
+    return result
+  },
 })
