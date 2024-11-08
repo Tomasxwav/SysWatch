@@ -5,21 +5,26 @@ import { Header } from './components/Header'
 import { useEffect, useState } from 'react'
 import { useLocalIP } from './hooks/useLocalIP'
 import { useScan } from './hooks/useScan'
-import { useOpenServer } from './hooks/useOpenSvr'
+import { useOpenSvr } from './hooks/useOpenSvr'
 
 function App() {
   const ip = useLocalIP()
 
   const [isConnected, setIsConnected] = useState<boolean>(false)
-  const [status, setStatus] = useState('...')
-  const servers: string[] | null = useScan(isConnected)
+  const [isServer, setIsServer] = useState<boolean>(false)
+  useOpenSvr(isServer)
+  const [status, setStatus] = useState('Desconectado')
+  const servers: string[] | null = useScan(isConnected, isServer)
 
   useEffect(() => {
-    console.log(servers)
     if (servers && servers.length > 0 && isConnected) {
-      setStatus('Servers encontrados: ' + servers)
+      setStatus('Servers encontrados: ' + servers + '. Enviando info...')
+      setIsServer(false)
     } else if (servers === null && isConnected) {
       setStatus('No se encontraron servidores... Se agregara este servidor')
+      console.log('No se encontraron servidores... Se agregara este servidor')
+
+      setIsServer(true)
     }
   }, [servers])
 
@@ -40,9 +45,7 @@ function App() {
         handleConnect={handleConnection}
         isConnected={isConnected}
       />
-      {servers}
       <Filters />
-      {isConnected ? <p>Conectado: Si</p> : <p>Conectado: No</p>}
       {<p>{status}</p>}
       <div className='device flex justify-around flex-wrap sm:flex-nowrap sm:overflow-x-auto mx-8 sm:border border-[#2a2a49]'>
         {servers &&

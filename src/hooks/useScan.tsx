@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 
-export const useScan = (isConnected: boolean) => {
+export const useScan = (isConnected: boolean, isServer?: boolean) => {
   const [servers, setServers] = useState<string[] | null>([])
 
   useEffect(() => {
@@ -24,6 +24,6 @@ export const useScan = (isConnected: boolean) => {
     }
 
     fetchServers()
-  }, [isConnected])
+  }, [isConnected, isServer])
   return servers
 }

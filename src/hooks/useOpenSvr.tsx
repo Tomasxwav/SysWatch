@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 
-export const useOpenServer = (isConnected: boolean) => {
+export const useOpenSvr = (isConnected: boolean) => {
   useEffect(() => {
     if (!isConnected) return
     window.electron.openServer()
