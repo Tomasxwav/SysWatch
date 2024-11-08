@@ -5,24 +5,28 @@ import { Header } from './components/Header'
 import { useEffect, useState } from 'react'
 import { useLocalIP } from './hooks/useLocalIP'
 import { useScan } from './hooks/useScan'
+import { useOpenServer } from './hooks/useOpenSvr'
 
 function App() {
   const ip = useLocalIP()
 
   const [isConnected, setIsConnected] = useState<boolean>(false)
   const [status, setStatus] = useState('...')
-  const servers = useScan(isConnected)
+  const servers: string[] | null = useScan(isConnected)
 
   useEffect(() => {
-    if (servers.length > 0) {
+    console.log(servers)
+    if (servers && servers.length > 0 && isConnected) {
       setStatus('Servers encontrados: ' + servers)
+    } else if (servers === null && isConnected) {
+      setStatus('No se encontraron servidores... Se agregara este servidor')
     }
   }, [servers])
-  console.log(servers)
+
   const handleConnection = async (data: boolean) => {
     if (data) {
-      setStatus('Buscando servidores...')
       setIsConnected(data)
+      setStatus('Buscando servidores...')
     } else {
       setIsConnected(data)
       setStatus('Desconectado')
@@ -36,14 +40,13 @@ function App() {
         handleConnect={handleConnection}
         isConnected={isConnected}
       />
-
+      {servers}
       <Filters />
       {isConnected ? <p>Conectado: Si</p> : <p>Conectado: No</p>}
       {<p>{status}</p>}
       <div className='device flex justify-around flex-wrap sm:flex-nowrap sm:overflow-x-auto mx-8 sm:border border-[#2a2a49]'>
-        {servers.map((server, index) => (
-          <Device key={index} ip={server} />
-        ))}
+        {servers &&
+          servers.map((server, index) => <Device key={index} ip={server} />)}
         <Device />
         <Device />
       </div>

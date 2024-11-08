@@ -11,8 +11,6 @@ export const Device = ({ ip }: DeviceProps) => {
     score: 8,
   }
 
-  console.log(device)
-
   return (
     <div className=' w-fit rounded-2xl bg-[#22223C] shadow-xl shadow-gray-950  font-extrabold text-[#7474A2] xl:min-w-56 2xl:min-w-64  xl:min-h-72 2xl:min-h-96 my-4 sm:mx-4 sm:pb-12 2xl:pb-40 mb-8'>
       <div className='bg-[#363554] rounded-t-2xl p-2 shadow-md'>
