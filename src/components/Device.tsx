@@ -1,6 +1,10 @@
-export const Device = () => {
+interface DeviceProps {
+  ip?: string
+}
+
+export const Device = ({ ip }: DeviceProps) => {
   let device = {
-    deviceName: 'PC1',
+    deviceName: ip,
     deviceRam: 33,
     deviceSpeed: 3.3,
     deviceConnection: 21,

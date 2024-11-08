@@ -2,52 +2,42 @@ import './App.css'
 import { Device } from './components/Device'
 import { Filters } from './components/Filters'
 import { Header } from './components/Header'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useLocalIP } from './hooks/useLocalIP'
-// import { useIP } from './context/IPContext'
+import { useScan } from './hooks/useScan'
+import { useOpenSvr } from './hooks/useOpenSvr'
 
 function App() {
   const ip = useLocalIP()
 
   const [isConnected, setIsConnected] = useState<boolean>(false)
+  const [isServer, setIsServer] = useState<boolean>(false)
+  useOpenSvr(isServer)
+  const [status, setStatus] = useState('Desconectado')
+  const servers: string[] | null = useScan(isConnected, isServer)
+
+  useEffect(() => {
+    if (servers && servers.length > 0 && isConnected) {
+      setStatus('Servers encontrados: ' + servers + '. Enviando info...')
+      setIsServer(false)
+    } else if (servers === null && isConnected) {
+      setStatus('No se encontraron servidores... Se agregara este servidor')
+      console.log('No se encontraron servidores... Se agregara este servidor')
+
+      setIsServer(true)
+    }
+  }, [servers])
 
   const handleConnection = async (data: boolean) => {
     if (data) {
-      for (let i = 2; i <= 5; i++) {
-        const ipdest = `192.168.1.${i}`
-        console.log(`Probando con ${ipdest}`)
-
-        if (ipdest === '192.168.1.5') {
-          console.log('Entro?')
-          setIsConnected(data)
-          break
-        }
-
-        // Evitar auto-conexión si ya se conoce la IP
-        if (ipdest !== ip) {
-          await new Promise<void>((resolve) => {
-            const socket = new WebSocket(`ws://${ipdest}:8080`)
-
-            socket.onopen = () => {
-              console.log(`Conectado a ${ipdest}`)
-              socket.send('Hola')
-              socket.close()
-              resolve() // Continuar al siguiente después de cerrar
-            }
-
-            socket.onerror = (error) => {
-              console.log(`Error al conectar a ${ipdest}: ${error}`)
-              resolve() // Continuar incluso si hubo error
-            }
-          })
-        }
-      }
-      console.log('FIN')
-      //setIsConnected(data)
+      setIsConnected(data)
+      setStatus('Buscando servidores...')
     } else {
       setIsConnected(data)
+      setStatus('Desconectado')
     }
   }
+
   return (
     <div className=''>
       <Header
@@ -55,12 +45,11 @@ function App() {
         handleConnect={handleConnection}
         isConnected={isConnected}
       />
-      {isConnected ? <p>Si</p> : <p>No</p>}
       <Filters />
+      {<p>{status}</p>}
       <div className='device flex justify-around flex-wrap sm:flex-nowrap sm:overflow-x-auto mx-8 sm:border border-[#2a2a49]'>
-        <Device />
-        <Device />
-        <Device />
+        {servers &&
+          servers.map((server, index) => <Device key={index} ip={server} />)}
         <Device />
         <Device />
       </div>
