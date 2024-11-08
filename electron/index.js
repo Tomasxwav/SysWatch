@@ -12,7 +12,7 @@ function createWindow() {
     width: 1200,
     height: 1000,
     webPreferences: {
-      preload: path.join(__dirname, 'electron/preload.js'),
+      preload: path.join(__dirname, '/preload.js'),
       contextIsolation: true,
       enableRemoteModule: false,
     },
