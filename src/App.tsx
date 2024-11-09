@@ -6,12 +6,16 @@ import { useEffect, useState } from 'react'
 import { useLocalIP } from './hooks/useLocalIP'
 import { useScan } from './hooks/useScan'
 import { useOpenSvr } from './hooks/useOpenSvr'
+import { useHardware } from './hooks/useHardware'
 
 function App() {
   const ip = useLocalIP()
 
   const [isConnected, setIsConnected] = useState<boolean>(false)
   const [isServer, setIsServer] = useState<boolean>(false)
+
+  const hardware = useHardware(true)
+  console.log(hardware)
   useOpenSvr(isServer)
   const [status, setStatus] = useState('Desconectado')
   const servers: string[] | null = useScan(isConnected, isServer)
@@ -49,7 +53,16 @@ function App() {
       {<p>{status}</p>}
       <div className='device flex justify-around flex-wrap sm:flex-nowrap sm:overflow-x-auto mx-8 sm:border border-[#2a2a49]'>
         {servers &&
-          servers.map((server, index) => <Device key={index} ip={server} />)}
+          servers.map((server, index) => (
+            <Device
+              key={index}
+              ip={server}
+              hostname={hardware?.hostname}
+              memory={hardware?.memory}
+              cpu={hardware?.cpu}
+              cpuspeed={hardware?.cpuspeed}
+            />
+          ))}
         <Device />
         <Device />
       </div>

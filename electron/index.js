@@ -1,6 +1,6 @@
 import { app, BrowserWindow, ipcMain } from 'electron'
 import path from 'path'
-import { networkInterfaces } from 'os'
+import os, { networkInterfaces } from 'os'
 import { fileURLToPath } from 'url'
 import net from 'net'
 
@@ -122,12 +122,38 @@ function getLocalIPAddress() {
   return '127.0.0.1'
 }
 
+/* Funcion para obtener datos del hardware */
+async function getHardware() {
+  const hostname = os.hostname()
+  const osInfo = os.type()
+  const cpus = os.cpus()
+  const cpu = cpus[0].model
+  const cpuspeed = cpus[0].speed
+  const memory = os.totalmem()
+  const freemem = os.freemem()
+  const freemempercent = os.freemem() / os.totalmem()
+  return {
+    hostname,
+    osInfo,
+    cpus,
+    cpu,
+    memory,
+    freemem,
+    freemempercent,
+    cpuspeed,
+  }
+}
+
 ipcMain.handle('scan-network', async () => {
   const result = await scanNetwork()
   return result
 })
 ipcMain.handle('open-server', async (event, port) => {
   openServer(port)
+})
+ipcMain.handle('get-hardware', async () => {
+  const result = await getHardware()
+  return result
 })
 
 app.whenReady().then(createWindow)
