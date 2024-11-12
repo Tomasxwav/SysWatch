@@ -13,4 +13,17 @@ contextBridge.exposeInMainWorld('electron', {
     const result = await ipcRenderer.invoke('get-hardware')
     return result
   },
+  sendHardware: async (hardware, server, port = 8080) => {
+    const result = await ipcRenderer.invoke(
+      'send-hardware',
+      hardware,
+      server,
+      port
+    )
+    return result
+  },
+  closeServer: async () => {
+    const result = await ipcRenderer.invoke('close-server')
+    return result
+  },
 })

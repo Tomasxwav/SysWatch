@@ -22,3 +22,7 @@ export function openServer(port = 8080) {
     console.log('Servidor TCP escuchando en el puerto ' + port + '...')
   })
 }
+export function closeServer() {
+  server.close()
+  console.log('Servidor cerrado...')
+}

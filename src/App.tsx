@@ -7,6 +7,7 @@ import { useLocalIP } from './hooks/useLocalIP'
 import { useScan } from './hooks/useScan'
 import { useOpenSvr } from './hooks/useOpenSvr'
 import { useHardware } from './hooks/useHardware'
+import { useCloseSvr } from './hooks/useCloseSvr'
 
 function App() {
   const ip = useLocalIP()
@@ -17,6 +18,7 @@ function App() {
   const hardware = useHardware(true)
   console.log(hardware)
   useOpenSvr(isServer)
+  useCloseSvr(isConnected)
   const [status, setStatus] = useState('Desconectado')
   const servers: string[] | null = useScan(isConnected, isServer)
 

@@ -1,6 +1,6 @@
 // src/main.js
 import { app, ipcMain } from 'electron'
-import { openServer } from './server.js'
+import { openServer, closeServer } from './server.js'
 import { scanNetwork } from './networkScanner.js'
 import { getHardware } from './hardware.js'
 import { fileURLToPath } from 'url'
@@ -50,8 +50,14 @@ ipcMain.handle('scan-network', async () => {
 ipcMain.handle('open-server', async (event, port) => {
   openServer(port)
 })
+ipcMain.handle('close-server', async () => {
+  await closeServer()
+})
 
 ipcMain.handle('get-hardware', async () => {
   const result = await getHardware()
   return result
+})
+ipcMain.handle('send-hardware', async (event, hardware, server, port) => {
+  sendHardware(hardware, server, port)
 })
