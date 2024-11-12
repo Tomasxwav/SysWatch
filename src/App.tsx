@@ -25,6 +25,7 @@ function App() {
   useEffect(() => {
     if (servers && servers.length > 0 && isConnected) {
       setStatus('Servers encontrados: ' + servers + '. Enviando info...')
+      window.electron.sendHardware(hardware, servers[0], 8080)
       setIsServer(false)
     } else if (servers === null && isConnected) {
       setStatus('No se encontraron servidores... Se agregara este servidor')
