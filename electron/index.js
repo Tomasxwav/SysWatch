@@ -1,9 +1,9 @@
 // src/main.js
 import { app, ipcMain } from 'electron'
-import { openServer, closeServer } from './server.js'
+/* import { openServer, closeServer } from './server.js'
 import { scanNetwork } from './networkScanner.js'
 import { getHardware } from './hardware.js'
-import { sendHardware } from './sendInfo.js'
+import { sendHardware } from './sendInfo.js' */
 import { fileURLToPath } from 'url'
 import { BrowserWindow } from 'electron'
 import path from 'path'

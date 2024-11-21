@@ -4,10 +4,6 @@ import { Filters } from './components/Filters'
 import { Header } from './components/Header'
 import { useEffect, useState } from 'react'
 import { useLocalIP } from './hooks/useLocalIP'
-import { useScan } from './hooks/useScan'
-import { useOpenSvr } from './hooks/useOpenSvr'
-import { useHardware } from './hooks/useHardware'
-import { useCloseSvr } from './hooks/useCloseSvr'
 
 function App() {
   const ip = useLocalIP()
