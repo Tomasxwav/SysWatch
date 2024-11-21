@@ -1,20 +1,30 @@
 interface DeviceProps {
   ip?: string
+  hostname?: string
+  memory?: number
+  cpu?: string
+  cpuspeed?: number
 }
 
-export const Device = ({ ip }: DeviceProps) => {
+export const Device = ({
+  ip,
+  hostname,
+  memory,
+  cpu,
+  cpuspeed,
+}: DeviceProps) => {
   let device = {
-    deviceName: ip,
-    deviceRam: 33,
-    deviceSpeed: 3.3,
-    deviceConnection: 21,
+    deviceName: hostname ? hostname : 'Unknown',
+    deviceMemory: memory ? memory / 1000000000 : 0,
+    cpu: cpu,
+    cpuspeed: cpuspeed,
     score: 8,
   }
 
   return (
     <div className=' w-fit rounded-2xl bg-[#22223C] shadow-xl shadow-gray-950  font-extrabold text-[#7474A2] xl:min-w-56 2xl:min-w-64  xl:min-h-72 2xl:min-h-96 my-4 sm:mx-4 sm:pb-12 2xl:pb-40 mb-8'>
       <div className='bg-[#363554] rounded-t-2xl p-2 shadow-md'>
-        <p>Device Name: {device.deviceName}</p>
+        <p>{device.deviceName}</p>
       </div>
       <div className='flex sm:flex-col items-center justify-center'>
         <div className='flex flex-col p-2 2xl:my-12  items-center w-full'>
@@ -26,27 +36,27 @@ export const Device = ({ ip }: DeviceProps) => {
 
         <div className='py-4'>
           <div className=' my-0 mx-auto'>
-            <p className='mx-4'>Aviable RAM</p>
+            <p className='mx-4'>Memory</p>
             <textarea
               disabled
-              className='h-8 mx-4 w-48 bg-[#363554]'
-              value={device.deviceRam + ' %'}
+              className='h-8 mx-4 w-fit bg-[#363554]'
+              value={device.deviceMemory.toFixed(2) + ' GB'}
             />
           </div>
           <div className='my-0 mx-auto'>
             <p className='mx-4'>CPU Speed</p>
             <textarea
               disabled
-              className='h-8 mx-4 w-48 bg-[#363554]'
-              value={device.deviceSpeed + ' Ghz'}
+              className='h-8 mx-4 w-fit bg-[#363554]'
+              value={device.cpuspeed + ' MHz'}
             />
           </div>
           <div className='my-0 mx-auto'>
-            <p className='mx-4'>Connection Speed</p>
+            <p className='mx-4'>CPU Model</p>
             <textarea
               disabled
-              className='h-8 mx-4 w-48 bg-[#363554]'
-              value={device.deviceConnection + ' mb/s'}
+              className='h-8 mx-4 w-fit bg-[#363554]'
+              value={device.cpu}
             />
           </div>
         </div>
