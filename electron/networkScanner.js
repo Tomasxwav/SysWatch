@@ -22,16 +22,19 @@ function checkPort(ip, port) {
     socket.on('connect', () => {
       socket.end()
       resolve({ ip, port, status: 'open' })
+      // console.log(ip + ':' + port + ' Es accesible')
     })
 
     socket.on('timeout', () => {
       socket.destroy()
       reject({ ip, port, status: 'closed' })
+      // console.log(ip + ':' + port + ' No es accesible')
     })
 
     socket.on('error', (err) => {
       socket.destroy()
       reject({ ip, port, status: 'closed' })
+      // console.log(ip + ':' + port + ' No es accesible')
     })
 
     socket.connect(port, ip)
@@ -52,6 +55,7 @@ export async function scanNetwork(port = 8080) {
   try {
     const results = await Promise.allSettled(promises)
     results.forEach((result) => {
+      console.log(result)
       if (result.status === 'fulfilled') {
         serverList.push(result.value.ip)
       }
@@ -59,5 +63,6 @@ export async function scanNetwork(port = 8080) {
   } catch (error) {
     console.error('Error al verificar puertos:', error)
   }
+  console.log(serverList)
   return serverList
 }

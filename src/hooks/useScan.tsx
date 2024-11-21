@@ -18,6 +18,12 @@ export const useScan = (isConnected: boolean, isServer?: boolean) => {
         } else {
           setServers(foundServers)
         }
+        console.log(
+          'Se debe escanear 2 veces, una al buscar por primera vez y otra ya que se asigno este como servidor ' +
+            servers?.toString() +
+            ' ' +
+            isServer
+        )
       } catch (error) {
         console.error('Error al escanear la red:', error)
       }

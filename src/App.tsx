@@ -16,7 +16,7 @@ function App() {
   const [isServer, setIsServer] = useState<boolean>(false)
 
   const hardware = useHardware(true)
-  console.log(hardware)
+  //console.log(hardware)
   useOpenSvr(isServer)
   useCloseSvr(isConnected)
   const [status, setStatus] = useState('Desconectado')
