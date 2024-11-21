@@ -23,7 +23,7 @@ function createWindow() {
   })
   // Carga la aplicación React (modo desarrollo)
   win.loadURL('http://localhost:3000')
-  mainWindow.webContents.openDevTools()
+  win.webContents.openDevTools()
 
   // Para producción:
   // win.loadFile(path.join(__dirname, 'build', 'index.html'))
