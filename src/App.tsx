@@ -9,12 +9,14 @@ function App() {
   const ip = useLocalIP()
 
   const [isConnected, setIsConnected] = useState<boolean>(false)
+  const [status, setStatus] = useState('Desconectado')
+
   /* const [isServer, setIsServer] = useState<boolean>(false)
 
   const hardware = useHardware(true)
   useOpenSvr(isServer)
   useCloseSvr(isConnected) */
-  // const [status, setStatus] = useState('Desconectado')
+
   // const servers: string[] | null = useScan(isConnected, isServer)
 
   /* useEffect(() => {
@@ -31,13 +33,13 @@ function App() {
   }, [servers]) */
 
   const handleConnection = async (data: boolean) => {
-    /* if (data) {
+    if (data) {
       setIsConnected(data)
       setStatus('Buscando servidores...')
     } else {
       setIsConnected(data)
       setStatus('Desconectado')
-    } */
+    }
   }
 
   return (
@@ -48,7 +50,7 @@ function App() {
         isConnected={isConnected}
       />
       <Filters />
-      {/* {<p>{status}</p>} */}
+      {<p>{status}</p>}
       <div className='device flex justify-around flex-wrap sm:flex-nowrap sm:overflow-x-auto mx-8 sm:border border-[#2a2a49]'>
         {/*servers &&
           servers.map((server, index) => (
