@@ -42,7 +42,7 @@ app.on('activate', () => {
     createWindow()
   }
 })
-
+/* 
 // Manejo de eventos de IPC
 ipcMain.handle('scan-network', async () => {
   const result = await scanNetwork()
@@ -63,3 +63,4 @@ ipcMain.handle('get-hardware', async () => {
 ipcMain.handle('send-hardware', async (event, hardware, server, port) => {
   sendHardware(hardware, server, port)
 })
+ */

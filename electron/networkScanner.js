@@ -1,4 +1,4 @@
-// src/networkScanner.js
+/* // src/networkScanner.js
 import os from 'os'
 import net from 'net'
 
@@ -61,3 +61,4 @@ export async function scanNetwork(port = 8080) {
   }
   return serverList
 }
+ */

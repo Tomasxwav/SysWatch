@@ -13,16 +13,15 @@ function App() {
   const ip = useLocalIP()
 
   const [isConnected, setIsConnected] = useState<boolean>(false)
-  const [isServer, setIsServer] = useState<boolean>(false)
+  /* const [isServer, setIsServer] = useState<boolean>(false)
 
   const hardware = useHardware(true)
-  console.log(hardware)
   useOpenSvr(isServer)
-  useCloseSvr(isConnected)
-  const [status, setStatus] = useState('Desconectado')
-  const servers: string[] | null = useScan(isConnected, isServer)
+  useCloseSvr(isConnected) */
+  // const [status, setStatus] = useState('Desconectado')
+  // const servers: string[] | null = useScan(isConnected, isServer)
 
-  useEffect(() => {
+  /* useEffect(() => {
     if (servers && servers.length > 0 && isConnected) {
       setStatus('Servers encontrados: ' + servers + '. Enviando info...')
       window.electron.sendHardware(hardware, servers[0], 8080)
@@ -33,16 +32,16 @@ function App() {
 
       setIsServer(true)
     }
-  }, [servers])
+  }, [servers]) */
 
   const handleConnection = async (data: boolean) => {
-    if (data) {
+    /* if (data) {
       setIsConnected(data)
       setStatus('Buscando servidores...')
     } else {
       setIsConnected(data)
       setStatus('Desconectado')
-    }
+    } */
   }
 
   return (
@@ -53,9 +52,9 @@ function App() {
         isConnected={isConnected}
       />
       <Filters />
-      {<p>{status}</p>}
+      {/* {<p>{status}</p>} */}
       <div className='device flex justify-around flex-wrap sm:flex-nowrap sm:overflow-x-auto mx-8 sm:border border-[#2a2a49]'>
-        {servers &&
+        {/*servers &&
           servers.map((server, index) => (
             <Device
               key={index}
@@ -65,7 +64,7 @@ function App() {
               cpu={hardware?.cpu}
               cpuspeed={hardware?.cpuspeed}
             />
-          ))}
+          ))*/}
         <Device />
         <Device />
       </div>

@@ -1,4 +1,4 @@
-// src/hardware.js
+/* // src/hardware.js
 import os from 'os'
 
 export async function getHardware() {
@@ -6,7 +6,7 @@ export async function getHardware() {
   const osInfo = os.type()
   const cpus = os.cpus()
   const cpu = cpus[0].model
-  const cpuspeed = cpus[0].speed
+  const cpuspeed = cpus[0].speed a
   const memory = os.totalmem()
   const freemem = os.freemem()
   const freemempercent = freemem / memory
@@ -20,4 +20,4 @@ export async function getHardware() {
     freemem,
     freemempercent,
   }
-}
+} */

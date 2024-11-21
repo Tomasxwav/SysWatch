@@ -1,4 +1,4 @@
-const { contextBridge, ipcRenderer } = require('electron')
+/* const { contextBridge, ipcRenderer } = require('electron')
 
 contextBridge.exposeInMainWorld('electron', {
   scanNetwork: async () => {
@@ -27,3 +27,4 @@ contextBridge.exposeInMainWorld('electron', {
     return result
   },
 })
+ */

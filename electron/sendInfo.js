@@ -1,4 +1,4 @@
-import net from 'net'
+/* import net from 'net'
 
 export function sendHardware(hardware, server, port = 8080) {
   const socket = new net.Socket()
@@ -6,3 +6,4 @@ export function sendHardware(hardware, server, port = 8080) {
     socket.write(JSON.stringify(hardware))
   })
 }
+ */
