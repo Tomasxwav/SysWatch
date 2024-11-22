@@ -19,7 +19,7 @@ function App() {
       if (servers.length > 0) {
         console.log(servers)
       } else {
-        console.log('No hay servidores')
+        console.log('No hay servidores... se manda a abir este servidor')
         //setStatus('No se encontraron servidores... Se agregara este servidor') //Con esto se renderiza 1 vez mas
         window.electron.openServer()
       }
