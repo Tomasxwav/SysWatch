@@ -4,20 +4,33 @@ import { Filters } from './components/Filters'
 import { Header } from './components/Header'
 import { useEffect, useState } from 'react'
 import { useLocalIP } from './hooks/useLocalIP'
+import { useScan } from './hooks/useScan'
 
 function App() {
+  console.log('App: Controlador de cargas')
   const ip = useLocalIP()
 
   const [isConnected, setIsConnected] = useState<boolean>(false)
   const [status, setStatus] = useState('Desconectado')
+  const servers: string[] = useScan(isConnected) // Causa de que se renderize 2 veces
 
+  useEffect(() => {
+    if (isConnected) {
+      if (servers.length > 0) {
+        console.log(servers)
+      } else {
+        console.log('No hay servidores')
+        //setStatus('No se encontraron servidores... Se agregara este servidor') //Con esto se renderiza 1 vez mas
+        window.electron.openServer()
+      }
+    }
+  }, [servers])
   /* const [isServer, setIsServer] = useState<boolean>(false)
-
   const hardware = useHardware(true)
   useOpenSvr(isServer)
   useCloseSvr(isConnected) */
 
-  // const servers: string[] | null = useScan(isConnected, isServer)
+  //
 
   /* useEffect(() => {
     if (servers && servers.length > 0 && isConnected) {
@@ -51,6 +64,8 @@ function App() {
       />
       <Filters />
       {<p>{status}</p>}
+      {<p>{servers}</p>}
+
       <div className='device flex justify-around flex-wrap sm:flex-nowrap sm:overflow-x-auto mx-8 sm:border border-[#2a2a49]'>
         {/*servers &&
           servers.map((server, index) => (

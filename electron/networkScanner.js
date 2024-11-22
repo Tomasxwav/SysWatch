@@ -1,4 +1,4 @@
-/* // src/networkScanner.js
+// src/networkScanner.js
 import os from 'os'
 import net from 'net'
 
@@ -22,6 +22,7 @@ function checkPort(ip, port) {
     socket.on('connect', () => {
       socket.end()
       resolve({ ip, port, status: 'open' })
+      console.log(ip + ':' + port + ' Es accesible')
     })
 
     socket.on('timeout', () => {
@@ -61,4 +62,3 @@ export async function scanNetwork(port = 8080) {
   }
   return serverList
 }
- */
