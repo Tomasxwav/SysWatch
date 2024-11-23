@@ -38,7 +38,7 @@ function createWindow() {
 
   ipcMain.handle('open-server', async (event, port = 8080) => {
     if (server) {
-      return 'El servidor ya está iniciado.'
+      console.log('El servidor ya ha iniciado.')
     }
 
     server = net.createServer((socket) => {
@@ -65,6 +65,14 @@ function createWindow() {
     })
 
     return 'Servidor iniciado correctamente en el puerto ' + port + '.'
+  })
+
+  ipcMain.handle('close-server', () => {
+    if (!server) {
+      return 'El servidor ya está cerrado.'
+    }
+    server.close()
+    console.log('Servidor cerrado...')
   })
 }
 

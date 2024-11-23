@@ -5,10 +5,14 @@ contextBridge.exposeInMainWorld('electron', {
     const result = await ipcRenderer.invoke('scan-network')
     return result
   },
-  openServer: async (port = 8080) => {
-    const result = await ipcRenderer.invoke('open-server', port)
+  openServer: (port = 8080) => {
+    ipcRenderer.invoke('open-server', port)
+  },
+  closeServer: async () => {
+    const result = await ipcRenderer.invoke('close-server')
     return result
-  } /*
+  },
+  /*
   getHardware: async () => {
     const result = await ipcRenderer.invoke('get-hardware')
     return result
@@ -21,9 +25,6 @@ contextBridge.exposeInMainWorld('electron', {
       port
     )
     return result
-  },
-  closeServer: async () => {
-    const result = await ipcRenderer.invoke('close-server')
-    return result
-  }, */,
+    
+  },*/
 })

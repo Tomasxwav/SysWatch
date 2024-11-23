@@ -11,8 +11,9 @@ function App() {
   const ip = useLocalIP()
 
   const [isConnected, setIsConnected] = useState<boolean>(false)
+  const [isServer, setIsServer] = useState<boolean>(false)
   const [status, setStatus] = useState('Desconectado')
-  const servers: string[] = useScan(isConnected) // Causa de que se renderize 2 veces
+  const servers: string[] = useScan(isConnected, isServer) // Causa de que se renderize 2 veces
 
   useEffect(() => {
     if (isConnected) {
@@ -22,7 +23,10 @@ function App() {
         console.log('No hay servidores... se manda a abir este servidor')
         //setStatus('No se encontraron servidores... Se agregara este servidor') //Con esto se renderiza 1 vez mas
         window.electron.openServer()
+        setIsServer(true)
       }
+    } else {
+      window.electron.closeServer()
     }
   }, [servers])
   /* const [isServer, setIsServer] = useState<boolean>(false)
@@ -51,6 +55,7 @@ function App() {
       setStatus('Buscando servidores...')
     } else {
       setIsConnected(data)
+      setIsServer(false)
       setStatus('Desconectado')
     }
   }
