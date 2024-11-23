@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 
 export const useScan = (isConnected: boolean, isServer?: boolean) => {
-  const [servers, setServers] = useState<string[] | null>([])
+  const [servers, setServers] = useState<string[]>([])
 
   useEffect(() => {
     if (!isConnected) {
@@ -13,7 +13,7 @@ export const useScan = (isConnected: boolean, isServer?: boolean) => {
       try {
         const foundServers = await window.electron.scanNetwork()
         if (foundServers.length === 0) {
-          setServers(null)
+          setServers([])
           return
         } else {
           setServers(foundServers)
@@ -25,5 +25,6 @@ export const useScan = (isConnected: boolean, isServer?: boolean) => {
 
     fetchServers()
   }, [isConnected, isServer])
+
   return servers
 }

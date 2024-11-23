@@ -5,24 +5,38 @@ import { Header } from './components/Header'
 import { useEffect, useState } from 'react'
 import { useLocalIP } from './hooks/useLocalIP'
 import { useScan } from './hooks/useScan'
-import { useOpenSvr } from './hooks/useOpenSvr'
-import { useHardware } from './hooks/useHardware'
-import { useCloseSvr } from './hooks/useCloseSvr'
 
 function App() {
+  console.log('App: Controlador de cargas')
   const ip = useLocalIP()
 
   const [isConnected, setIsConnected] = useState<boolean>(false)
   const [isServer, setIsServer] = useState<boolean>(false)
-
-  const hardware = useHardware(true)
-  console.log(hardware)
-  useOpenSvr(isServer)
-  useCloseSvr(isConnected)
   const [status, setStatus] = useState('Desconectado')
-  const servers: string[] | null = useScan(isConnected, isServer)
+  const servers: string[] = useScan(isConnected, isServer) // Causa de que se renderize 2 veces
 
   useEffect(() => {
+    if (isConnected) {
+      if (servers.length > 0) {
+        console.log(servers)
+      } else {
+        console.log('No hay servidores... se manda a abir este servidor')
+        //setStatus('No se encontraron servidores... Se agregara este servidor') //Con esto se renderiza 1 vez mas
+        window.electron.openServer()
+        setIsServer(true)
+      }
+    } else {
+      window.electron.closeServer()
+    }
+  }, [servers])
+  /* const [isServer, setIsServer] = useState<boolean>(false)
+  const hardware = useHardware(true)
+  useOpenSvr(isServer)
+  useCloseSvr(isConnected) */
+
+  //
+
+  /* useEffect(() => {
     if (servers && servers.length > 0 && isConnected) {
       setStatus('Servers encontrados: ' + servers + '. Enviando info...')
       window.electron.sendHardware(hardware, servers[0], 8080)
@@ -33,7 +47,7 @@ function App() {
 
       setIsServer(true)
     }
-  }, [servers])
+  }, [servers]) */
 
   const handleConnection = async (data: boolean) => {
     if (data) {
@@ -41,6 +55,7 @@ function App() {
       setStatus('Buscando servidores...')
     } else {
       setIsConnected(data)
+      setIsServer(false)
       setStatus('Desconectado')
     }
   }
@@ -54,8 +69,10 @@ function App() {
       />
       <Filters />
       {<p>{status}</p>}
+      {<p>{servers}</p>}
+
       <div className='device flex justify-around flex-wrap sm:flex-nowrap sm:overflow-x-auto mx-8 sm:border border-[#2a2a49]'>
-        {servers &&
+        {/*servers &&
           servers.map((server, index) => (
             <Device
               key={index}
@@ -65,7 +82,7 @@ function App() {
               cpu={hardware?.cpu}
               cpuspeed={hardware?.cpuspeed}
             />
-          ))}
+          ))*/}
         <Device />
         <Device />
       </div>

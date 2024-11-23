@@ -22,6 +22,7 @@ function checkPort(ip, port) {
     socket.on('connect', () => {
       socket.end()
       resolve({ ip, port, status: 'open' })
+      console.log(ip + ':' + port + ' Es accesible')
     })
 
     socket.on('timeout', () => {
