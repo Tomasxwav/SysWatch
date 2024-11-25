@@ -13,13 +13,36 @@ function App() {
   const [isConnected, setIsConnected] = useState<boolean>(false)
   const [isServer, setIsServer] = useState<boolean>(false)
   const [status, setStatus] = useState('Desconectado')
-  const servers: string[] = useScan(isConnected, isServer) // Causa de que se renderize 2 veces
+  let servers: string[] = useScan(isConnected, isServer) // Causa de que se renderize 2 veces
   const [info, setInfo] = useState<any>(null)
+  let cont = 0
 
+  ////////////Maneja el intervalo que envía información a los servidores.//////////////////////
+  useEffect(() => {
+    let interval: number | null = null
+
+    if (servers.length > 0) {
+      interval = setInterval(() => {
+        window.electron.sendInfo(servers[0], 8080)
+        console.log('intervalo ' + cont)
+        cont++
+      }, 3000)
+    } else {
+      console.log('Si entra aqui???? ' + servers.length)
+    }
+
+    return () => {
+      if (interval) {
+        clearInterval(interval)
+        console.log('Intervalo limpiado')
+      }
+    }
+  }, [servers])
+
+  ////////////////////////// Lógica de conexión/desconexión ////////////////////////////////////
   useEffect(() => {
     if (isConnected) {
       if (servers.length > 0) {
-        console.log(servers)
         window.electron.onNewInfo((NewInfo: any) => {
           setInfo(NewInfo)
         })
@@ -33,25 +56,6 @@ function App() {
       window.electron.closeServer()
     }
   }, [servers])
-  /* const [isServer, setIsServer] = useState<boolean>(false)
-  const hardware = useHardware(true)
-  useOpenSvr(isServer)
-  useCloseSvr(isConnected) */
-
-  //
-
-  /* useEffect(() => {
-    if (servers && servers.length > 0 && isConnected) {
-      setStatus('Servers encontrados: ' + servers + '. Enviando info...')
-      window.electron.sendHardware(hardware, servers[0], 8080)
-      setIsServer(false)
-    } else if (servers === null && isConnected) {
-      setStatus('No se encontraron servidores... Se agregara este servidor')
-      console.log('No se encontraron servidores... Se agregara este servidor')
-
-      setIsServer(true)
-    }
-  }, [servers]) */
 
   const handleConnection = async (data: boolean) => {
     if (data) {
@@ -60,6 +64,7 @@ function App() {
     } else {
       setIsConnected(data)
       setIsServer(false)
+      servers = []
       setStatus('Desconectado')
     }
   }

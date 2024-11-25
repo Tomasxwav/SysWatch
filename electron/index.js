@@ -38,13 +38,7 @@ function createWindow() {
   /////////////////////// EVENTO SCAN  ///////////////////////
   ipcMain.handle('scan-network', async () => {
     const result = await scanNetwork()
-    if (result.length > 0) {
-      console.log('Se encontro un servidor ' + result[0])
-      setInterval(() => {
-        sendInfo(result[0], counter)
-        counter++
-      }, 3000)
-    }
+
     return result
   })
 
@@ -87,6 +81,12 @@ function createWindow() {
     }
     server.close()
     console.log('Servidor cerrado...')
+  })
+
+  /////////////////////// EVENTO ENVIAR INFORMACION ///////////////////////
+  ipcMain.handle('send-info', async (event, server, port) => {
+    sendInfo(server, counter)
+    counter++
   })
   /////////////////////////////////////////////////////////////////////
 }
