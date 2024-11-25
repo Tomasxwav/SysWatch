@@ -14,11 +14,15 @@ function App() {
   const [isServer, setIsServer] = useState<boolean>(false)
   const [status, setStatus] = useState('Desconectado')
   const servers: string[] = useScan(isConnected, isServer) // Causa de que se renderize 2 veces
+  const [info, setInfo] = useState<any>(null)
 
   useEffect(() => {
     if (isConnected) {
       if (servers.length > 0) {
         console.log(servers)
+        window.electron.onNewInfo((NewInfo: any) => {
+          setInfo(NewInfo)
+        })
       } else {
         console.log('No hay servidores... se manda a abir este servidor')
         //setStatus('No se encontraron servidores... Se agregara este servidor') //Con esto se renderiza 1 vez mas
@@ -70,7 +74,7 @@ function App() {
       <Filters />
       {<p>{status}</p>}
       {<p>{servers}</p>}
-
+      <p> {JSON.stringify(info)}</p>
       <div className='device flex justify-around flex-wrap sm:flex-nowrap sm:overflow-x-auto mx-8 sm:border border-[#2a2a49]'>
         {/*servers &&
           servers.map((server, index) => (
