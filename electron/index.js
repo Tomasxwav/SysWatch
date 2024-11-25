@@ -1,8 +1,7 @@
 // src/main.js
 import { app, ipcMain } from 'electron'
-/* import { openServer, closeServer } from './server.js'
-import { getHardware } from './hardware.js'
-import { sendHardware } from './sendInfo.js' */
+/* import { getHardware } from './hardware.js'*/
+import { sendInfo } from './sendInfo.js'
 import { scanNetwork } from './networkScanner.js'
 import { fileURLToPath } from 'url'
 import { BrowserWindow } from 'electron'
@@ -11,6 +10,7 @@ import net from 'net'
 
 let win
 let server
+let counter = 0
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
@@ -31,11 +31,24 @@ function createWindow() {
   // Para producción:
   // win.loadFile(path.join(__dirname, 'build', 'index.html'))
 
+  /////////////////////////////////////////////////////////////////////
+
+  // Manejo de eventos de IPC
+
+  /////////////////////// EVENTO SCAN  ///////////////////////
   ipcMain.handle('scan-network', async () => {
     const result = await scanNetwork()
+    if (result.length > 0) {
+      console.log('Se encontro un servidor ' + result[0])
+      setInterval(() => {
+        sendInfo(result[0], counter)
+        counter++
+      }, 3000)
+    }
     return result
   })
 
+  ////////////////////// EVENTO ABRIR SERVER ///////////////////////
   ipcMain.handle('open-server', async (event, port = 8080) => {
     if (server) {
       console.log('El servidor ya ha iniciado.')
@@ -52,7 +65,8 @@ function createWindow() {
         socket.write('Mensaje recibido\n')
 
         // Envía datos al renderer
-        win.webContents.send('server-message', data.toString())
+        let info = JSON.parse(data)
+        win.webContents.send('send-received-data', info)
       })
 
       socket.on('end', () => {
@@ -66,7 +80,7 @@ function createWindow() {
 
     return 'Servidor iniciado correctamente en el puerto ' + port + '.'
   })
-
+  /////////////////////// EVENTO CERRAR SERVER ///////////////////////
   ipcMain.handle('close-server', () => {
     if (!server) {
       return 'El servidor ya está cerrado.'
@@ -74,6 +88,7 @@ function createWindow() {
     server.close()
     console.log('Servidor cerrado...')
   })
+  /////////////////////////////////////////////////////////////////////
 }
 
 app.whenReady().then(createWindow)
@@ -89,22 +104,3 @@ app.on('activate', () => {
     createWindow()
   }
 })
-
-// Manejo de eventos de IPC
-
-/* 
-ipcMain.handle('open-server', async (event, port) => {
-  openServer(port)
-})
-ipcMain.handle('close-server', async () => {
-  await closeServer()
-})
-
-ipcMain.handle('get-hardware', async () => {
-  const result = await getHardware()
-  return result
-})
-ipcMain.handle('send-hardware', async (event, hardware, server, port) => {
-  sendHardware(hardware, server, port)
-})
- */
