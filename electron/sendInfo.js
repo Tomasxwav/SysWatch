@@ -21,7 +21,7 @@ export const sendInfo = (server, counter) => {
       hostname: os.hostname(),
       osInfo: os.type(),
       memory: os.totalmem(),
-      prueba: 1 + counter,
+      prueba: counter,
     },
     server,
     8080

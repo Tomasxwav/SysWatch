@@ -12,6 +12,9 @@ contextBridge.exposeInMainWorld('electron', {
     const result = await ipcRenderer.invoke('close-server')
     return result
   },
+  sendInfo: (server, port = 8080) => {
+    ipcRenderer.invoke('send-info', server, port)
+  },
   onNewInfo: (callback) =>
     ipcRenderer.on('send-received-data', (event, info) => callback(info)),
 })
