@@ -81,6 +81,7 @@ function createWindow() {
     }
     server.close()
     console.log('Servidor cerrado...')
+    counter = 0
   })
 
   /////////////////////// EVENTO ENVIAR INFORMACION ///////////////////////
