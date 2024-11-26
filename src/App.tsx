@@ -27,8 +27,6 @@ function App() {
         console.log('intervalo ' + cont)
         cont++
       }, 3000)
-    } else {
-      console.log('Si entra aqui???? ' + servers.length)
     }
 
     return () => {
