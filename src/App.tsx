@@ -14,7 +14,7 @@ function App() {
   const [isServer, setIsServer] = useState<boolean>(false)
   const [status, setStatus] = useState('Desconectado')
   let servers: string[] = useScan(isConnected, isServer) // Causa de que se renderize 2 veces
-  const [info, setInfo] = useState<any>(null)
+  const [info, setInfo] = useState<string[]>([])
   let cont = 0
 
   ////////////Maneja el intervalo que envía información a los servidores.//////////////////////
@@ -32,6 +32,8 @@ function App() {
     return () => {
       if (interval) {
         clearInterval(interval)
+        window.electron.closeConnection(servers[0], 8080)
+
         console.log('Intervalo limpiado')
       }
     }
@@ -41,7 +43,7 @@ function App() {
   useEffect(() => {
     if (isConnected) {
       if (servers.length > 0) {
-        window.electron.onNewInfo((NewInfo: any) => {
+        window.electron.onNewInfo((NewInfo: [string]) => {
           setInfo(NewInfo)
         })
       } else {
