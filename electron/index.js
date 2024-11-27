@@ -1,7 +1,7 @@
 // src/main.js
 import { app, ipcMain } from 'electron'
 /* import { getHardware } from './hardware.js'*/
-import { sendInfo } from './sendInfo.js'
+import { sendInfo, closeConnection } from './sendInfo.js'
 import { scanNetwork } from './networkScanner.js'
 import { fileURLToPath } from 'url'
 import { BrowserWindow } from 'electron'
@@ -10,6 +10,7 @@ import net from 'net'
 
 let win
 let server
+const clients = new Map()
 let counter = 0
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
@@ -49,22 +50,30 @@ function createWindow() {
     }
 
     server = net.createServer((socket) => {
-      console.log(
-        'Cliente conectado ' + socket.remoteAddress + ':' + socket.remotePort
-      )
+      const clientId = `${socket.remoteAddress}:${socket.remotePort}`
+      console.log('Cliente conectado ' + clientId)
+      clients.set(clientId, { socket, data: null })
       socket.write('¡Bienvenido al servidor!\n')
 
+      sendClientsToRenderer()
+
       socket.on('data', (data) => {
-        console.log(`Recibido del cliente: ${data}`)
+        const parsedData = data.toString() // Asegúrate de procesar correctamente los datos
+        console.log(`Mensaje de ${clientId}: ${parsedData}`)
+
+        // Actualizar datos del cliente
+        clients.set(clientId, { socket, data: parsedData })
+
         socket.write('Mensaje recibido\n')
 
         // Envía datos al renderer
-        let info = JSON.parse(data)
-        win.webContents.send('send-received-data', info)
+        sendClientsToRenderer()
       })
 
       socket.on('end', () => {
         console.log('Cliente desconectado')
+        clients.delete(clientId)
+        sendClientsToRenderer()
       })
     })
 
@@ -89,6 +98,18 @@ function createWindow() {
     sendInfo(server, counter)
     counter++
   })
+  ipcMain.handle('close-connection', async (event, server, port) => {
+    closeConnection(server)
+  })
+  /////////////////////////////////////////////////////////////////////
+  function sendClientsToRenderer() {
+    const clientList = Array.from(clients.entries()).map(([id, { data }]) => ({
+      id,
+      data,
+    }))
+
+    win.webContents.send('send-received-data', clientList)
+  }
   /////////////////////////////////////////////////////////////////////
 }
 
