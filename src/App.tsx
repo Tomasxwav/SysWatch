@@ -5,16 +5,10 @@ import { Header } from './components/Header'
 import { useEffect, useState } from 'react'
 import { useLocalIP } from './hooks/useLocalIP'
 import { useScan } from './hooks/useScan'
+import { Skeleton } from './components/Skeleton'
 
 function App() {
   console.log('App: Controlador de cargas')
-  interface DeviceInfo {
-    hostname: string
-    memory: number
-    cpu: string
-    cpuspeed: number
-    score: number
-  }
   interface ClientInfo {
     id: string
     hostname: string
@@ -67,7 +61,7 @@ function App() {
         })
       } else {
         console.log('No hay servidores... se manda a abir este servidor')
-        //setStatus('No se encontraron servidores... Se agregara este servidor') //Con esto se renderiza 1 vez mas
+        setStatus('No se encontraron servidores... Se agregara este servidor') //Con esto se renderiza 1 vez mas
         window.electron.openServer()
         setIsServer(true)
       }
@@ -97,11 +91,9 @@ function App() {
       />
       <Filters />
       {<p>{status}</p>}
-      {<p>{servers}</p>}
-      <p> {info.length > 0 && info[0]?.hostname} </p>
 
       <div className='device flex justify-around flex-wrap sm:flex-nowrap sm:overflow-x-auto mx-8 sm:border border-[#2a2a49]'>
-        {info &&
+        {info.length > 0 ? (
           info.map((data, index) => (
             <Device
               key={index}
@@ -110,9 +102,10 @@ function App() {
               cpu={data.cpu}
               cpuspeed={data.cpuspeed}
             />
-          ))}
-        <Device />
-        <Device />
+          ))
+        ) : (
+          <Skeleton />
+        )}
       </div>
     </div>
   )

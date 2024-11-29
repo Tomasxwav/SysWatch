@@ -4,6 +4,7 @@ interface DeviceProps {
   memory?: number
   cpu?: string
   cpuspeed?: number
+  score?: number
 }
 
 export const Device = ({
@@ -12,13 +13,14 @@ export const Device = ({
   memory,
   cpu,
   cpuspeed,
+  score,
 }: DeviceProps) => {
   let device = {
     deviceName: hostname ? hostname : 'Unknown',
     deviceMemory: memory ? memory / 1000000000 : 0,
     cpu: cpu,
     cpuspeed: cpuspeed,
-    score: 8,
+    score: score,
   }
 
   return (
@@ -55,7 +57,7 @@ export const Device = ({
             <p className='mx-4'>CPU Model</p>
             <textarea
               disabled
-              className='h-8 mx-4 w-fit bg-[#363554]'
+              className='h-fit mx-4 w-fit bg-[#363554]'
               value={device.cpu}
             />
           </div>
