@@ -101,6 +101,7 @@ function App() {
               memory={data.memory}
               cpu={data.cpu}
               cpuspeed={data.cpuspeed}
+              score={data.score}
             />
           ))
         ) : (
