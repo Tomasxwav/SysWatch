@@ -58,12 +58,11 @@ function createWindow() {
       sendClientsToRenderer()
 
       socket.on('data', (data) => {
-        const parsedData = data.toString() // Asegúrate de procesar correctamente los datos
-        console.log(`Mensaje de ${clientId}: ${parsedData}`)
+        const parsedData = JSON.parse(data) // Asegúrate de procesar correctamente los datos
+        console.log(`Mensaje de ${clientId}: ${parsedData.hostname}`)
 
         // Actualizar datos del cliente
         clients.set(clientId, { socket, data: parsedData })
-
         socket.write('Mensaje recibido\n')
 
         // Envía datos al renderer
@@ -105,8 +104,9 @@ function createWindow() {
   function sendClientsToRenderer() {
     const clientList = Array.from(clients.entries()).map(([id, { data }]) => ({
       id,
-      data,
+      ...data,
     }))
+    console.log(`clients ${JSON.stringify(clientList)}`)
 
     win.webContents.send('send-received-data', clientList)
   }

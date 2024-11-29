@@ -39,10 +39,12 @@ export const sendInfo = (server, counter) => {
       hostname: os.hostname(),
       osInfo: os.type(),
       memory: os.totalmem(),
-      prueba: counter,
+      cpu: os.cpus()[0].model,
+      cpuspeed: os.cpus()[0].speed,
+      score: counter,
     }
 
-    currentSocket.write(JSON.stringify(hardware)) // Agrega un delimitador si es necesario
+    currentSocket.write(JSON.stringify(hardware))
   } else {
     console.error(
       'No se pudo enviar la información porque el socket está destruido'
