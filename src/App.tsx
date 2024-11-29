@@ -8,13 +8,31 @@ import { useScan } from './hooks/useScan'
 
 function App() {
   console.log('App: Controlador de cargas')
+  interface DeviceInfo {
+    hostname: string
+    memory: number
+    cpu: string
+    cpuspeed: number
+    score: number
+  }
+  interface ClientInfo {
+    id: string
+    hostname: string
+    memory: number
+    cpu: string
+    cpuspeed: number
+    score: number
+  }
+
   const ip = useLocalIP()
 
   const [isConnected, setIsConnected] = useState<boolean>(false)
   const [isServer, setIsServer] = useState<boolean>(false)
   const [status, setStatus] = useState('Desconectado')
   let servers: string[] = useScan(isConnected, isServer) // Causa de que se renderize 2 veces
-  const [info, setInfo] = useState<string[]>([])
+
+  const [info, setInfo] = useState<ClientInfo[]>([])
+
   let cont = 0
 
   ////////////Maneja el intervalo que envía información a los servidores.//////////////////////
@@ -43,8 +61,9 @@ function App() {
   useEffect(() => {
     if (isConnected) {
       if (servers.length > 0) {
-        window.electron.onNewInfo((NewInfo: [string]) => {
+        window.electron.onNewInfo((NewInfo: ClientInfo[]) => {
           setInfo(NewInfo)
+          console.log(NewInfo)
         })
       } else {
         console.log('No hay servidores... se manda a abir este servidor')
@@ -79,19 +98,19 @@ function App() {
       <Filters />
       {<p>{status}</p>}
       {<p>{servers}</p>}
-      <p> {JSON.stringify(info)}</p>
+      <p> {info.length > 0 && info[0]?.hostname} </p>
+
       <div className='device flex justify-around flex-wrap sm:flex-nowrap sm:overflow-x-auto mx-8 sm:border border-[#2a2a49]'>
-        {/*servers &&
-          servers.map((server, index) => (
+        {info &&
+          info.map((data, index) => (
             <Device
               key={index}
-              ip={server}
-              hostname={hardware?.hostname}
-              memory={hardware?.memory}
-              cpu={hardware?.cpu}
-              cpuspeed={hardware?.cpuspeed}
+              hostname={data.hostname}
+              memory={data.memory}
+              cpu={data.cpu}
+              cpuspeed={data.cpuspeed}
             />
-          ))*/}
+          ))}
         <Device />
         <Device />
       </div>
