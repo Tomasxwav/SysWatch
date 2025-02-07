@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react'
 
+const PORT = import.meta.env.VITE_PORT || 3005
+
 export const useScan = (isConnected: boolean, isServer?: boolean) => {
   const [servers, setServers] = useState<string[]>([])
 
@@ -7,11 +9,11 @@ export const useScan = (isConnected: boolean, isServer?: boolean) => {
     if (!isConnected) {
       setServers([])
       return
-    } // Solo ejecuta el efecto si isConnected es true
+    }
 
     const fetchServers = async () => {
       try {
-        const foundServers = await window.electron.scanNetwork()
+        const foundServers = await window.electron.scanNetwork(PORT)
         if (foundServers.length === 0) {
           setServers([])
           return
