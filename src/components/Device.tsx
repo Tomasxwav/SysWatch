@@ -15,8 +15,8 @@ export const Device = ({
   cpuspeed,
   score,
 }: DeviceProps) => {
-  let device = {
-    deviceName: hostname ? hostname : 'Unknown',
+  const device = {
+    deviceName: hostname ? hostname : ip,
     deviceMemory: memory ? memory / 1000000000 : 0,
     cpu: cpu,
     cpuspeed: cpuspeed,

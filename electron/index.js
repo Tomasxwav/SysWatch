@@ -38,9 +38,9 @@ function createWindow() {
 
   /////////////////////// EVENTO SCAN  ///////////////////////
   ipcMain.handle('scan-network', async () => {
-    const result = await scanNetwork()
+    const serverList = await scanNetwork()
 
-    return result
+    return serverList
   })
 
   ////////////////////// EVENTO ABRIR SERVER ///////////////////////

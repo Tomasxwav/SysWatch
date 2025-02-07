@@ -7,8 +7,7 @@ import { useLocalIP } from './hooks/useLocalIP'
 import { useScan } from './hooks/useScan'
 import { Skeleton } from './components/Skeleton'
 
-function App() {
-  console.log('App: Controlador de cargas')
+declare global {
   interface ClientInfo {
     id: string
     hostname: string
@@ -17,6 +16,21 @@ function App() {
     cpuspeed: number
     score: number
   }
+
+  interface Window {
+    electron: {
+      sendInfo: (server: string, port: number) => void
+      closeConnection: (server: string, port: number) => void
+      onNewInfo: (callback: (newInfo: ClientInfo[]) => void) => void
+      openServer: () => void
+      closeServer: () => void
+      scanNetwork: () => Promise<string[]>
+    }
+  }
+}
+
+function App() {
+  console.log('App: Controlador de cargas')
 
   const ip = useLocalIP()
 
@@ -31,7 +45,7 @@ function App() {
 
   ////////////Maneja el intervalo que envía información a los servidores.//////////////////////
   useEffect(() => {
-    let interval: number | null = null
+    let interval: ReturnType<typeof setInterval> | null = null // Intervalo para enviar información a los servidores
 
     if (servers.length > 0) {
       interval = setInterval(() => {
