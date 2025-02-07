@@ -24,6 +24,7 @@ function connectToServer(server, port = 8080) {
 
   socket.on('close', () => {
     console.log('Conexión cerrada por el servidor')
+    socket.destroy()
     socket = null // Resetear el socket
   })
 

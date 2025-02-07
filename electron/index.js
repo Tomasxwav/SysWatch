@@ -71,6 +71,7 @@ function createWindow() {
 
       socket.on('end', () => {
         console.log('Cliente desconectado')
+
         clients.delete(clientId)
         sendClientsToRenderer()
       })
@@ -106,7 +107,7 @@ function createWindow() {
       id,
       ...data,
     }))
-    console.log(`clients ${JSON.stringify(clientList)}`)
+    console.log(`clients ${clientList.length} ${JSON.stringify(clientList)}`)
 
     win.webContents.send('send-received-data', clientList)
   }
