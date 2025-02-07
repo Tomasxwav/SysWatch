@@ -39,7 +39,7 @@ function checkPort(ip, port) {
   })
 }
 
-export async function scanNetwork(port = 8080) {
+export async function scanNetwork(port) {
   const ipAddress = getLocalIPAddress()
   const subnet = ipAddress.split('.').slice(0, 3).join('.')
   const promises = []
@@ -60,5 +60,6 @@ export async function scanNetwork(port = 8080) {
   } catch (error) {
     console.error('Error al verificar puertos:', error)
   }
+
   return serverList
 }

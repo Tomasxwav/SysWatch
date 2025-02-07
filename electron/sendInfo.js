@@ -4,9 +4,8 @@ import os from 'os'
 // Crear un socket global para reutilizarlo
 let socket = null
 
-function connectToServer(server, port = 8080) {
+function connectToServer(server, port) {
   if (socket && !socket.destroyed) {
-    // Si el socket ya está conectado y no está destruido, reutilízalo
     return socket
   }
 
@@ -19,21 +18,21 @@ function connectToServer(server, port = 8080) {
   socket.on('error', (err) => {
     console.error('Error en el socket:', err.message)
     socket.destroy()
-    socket = null // Resetear el socket para intentar reconectar
+    socket = null
   })
 
   socket.on('close', () => {
     console.log('Conexión cerrada por el servidor')
     socket.destroy()
-    socket = null // Resetear el socket
+    socket = null
   })
 
   socket.connect(port, server)
   return socket
 }
 
-export const sendInfo = (server, counter) => {
-  const currentSocket = connectToServer(server, 8080)
+export const sendInfo = (server, counter, port) => {
+  const currentSocket = connectToServer(server, port)
 
   if (currentSocket && !currentSocket.destroyed) {
     const hardware = {
@@ -53,8 +52,8 @@ export const sendInfo = (server, counter) => {
   }
 }
 
-export const closeConnection = (server) => {
-  const currentSocket = connectToServer(server, 8080)
+export const closeConnection = (server, port) => {
+  const currentSocket = connectToServer(server, port)
 
   if (currentSocket && !currentSocket.destroyed) {
     socket.destroy()

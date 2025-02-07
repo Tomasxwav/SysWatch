@@ -7,6 +7,8 @@ import { useLocalIP } from './hooks/useLocalIP'
 import { useScan } from './hooks/useScan'
 import { Skeleton } from './components/Skeleton'
 
+const PORT = import.meta.env.VITE_PORT || 3005
+
 declare global {
   interface ClientInfo {
     id: string
@@ -22,9 +24,9 @@ declare global {
       sendInfo: (server: string, port: number) => void
       closeConnection: (server: string, port: number) => void
       onNewInfo: (callback: (newInfo: ClientInfo[]) => void) => void
-      openServer: () => void
+      openServer: (port: number) => Promise<string>
       closeServer: () => void
-      scanNetwork: () => Promise<string[]>
+      scanNetwork: (port: number) => Promise<string[]>
     }
   }
 }
@@ -49,7 +51,7 @@ function App() {
 
     if (servers.length > 0) {
       interval = setInterval(() => {
-        window.electron.sendInfo(servers[0], 8080)
+        window.electron.sendInfo(servers[0], PORT)
         console.log('intervalo ' + cont)
         cont++
       }, 3000)
@@ -58,7 +60,7 @@ function App() {
     return () => {
       if (interval) {
         clearInterval(interval)
-        window.electron.closeConnection(servers[0], 8080)
+        window.electron.closeConnection(servers[0], PORT)
 
         console.log('Intervalo limpiado')
       }
@@ -71,13 +73,29 @@ function App() {
       if (servers.length > 0) {
         window.electron.onNewInfo((NewInfo: ClientInfo[]) => {
           setInfo(NewInfo)
-          console.log(NewInfo)
+          console.log('Info ' + JSON.stringify(NewInfo))
         })
       } else {
-        console.log('No hay servidores... se manda a abir este servidor')
-        setStatus('No se encontraron servidores... Se agregara este servidor') //Con esto se renderiza 1 vez mas
-        window.electron.openServer()
-        setIsServer(true)
+        console.log(
+          'No se encontraron servidores ... se manda a abrir este servidor'
+        )
+        setStatus('No se encontraron servidores... Se agregará este servidor')
+
+        window.electron
+          .openServer(PORT)
+          .then((msg) => {
+            console.log(msg) // Asegúrate de que realmente inicia
+            setIsServer(true)
+          })
+          .catch((err) => {
+            console.error('Error al iniciar el servidor:', err)
+          })
+        /* if (!isServer && servers.length === 0) {
+          window.electron.openServer(PORT).then((msg) => {
+            console.log(msg)
+            setIsServer(true)
+          })
+        } */
       }
     } else {
       window.electron.closeServer()

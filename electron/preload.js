@@ -1,21 +1,21 @@
 const { contextBridge, ipcRenderer } = require('electron')
 
 contextBridge.exposeInMainWorld('electron', {
-  scanNetwork: async () => {
-    const result = await ipcRenderer.invoke('scan-network')
+  scanNetwork: async (port) => {
+    const result = await ipcRenderer.invoke('scan-network', port)
     return result
   },
-  openServer: (port = 8080) => {
-    ipcRenderer.invoke('open-server', port)
+  openServer: async (port) => {
+    return await ipcRenderer.invoke('open-server', port)
   },
   closeServer: async () => {
     const result = await ipcRenderer.invoke('close-server')
     return result
   },
-  sendInfo: (server, port = 8080) => {
+  sendInfo: (server, port) => {
     ipcRenderer.invoke('send-info', server, port)
   },
-  closeConnection: (server, port = 8080) => {
+  closeConnection: (server, port) => {
     ipcRenderer.invoke('close-connection', server, port)
   },
   onNewInfo: (callback) =>

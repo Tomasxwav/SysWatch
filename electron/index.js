@@ -9,7 +9,7 @@ import path from 'path'
 import net from 'net'
 
 let win
-let server
+let server = null
 const clients = new Map()
 let counter = 0
 const __filename = fileURLToPath(import.meta.url)
@@ -37,16 +37,15 @@ function createWindow() {
   // Manejo de eventos de IPC
 
   /////////////////////// EVENTO SCAN  ///////////////////////
-  ipcMain.handle('scan-network', async () => {
-    const serverList = await scanNetwork()
-
+  ipcMain.handle('scan-network', async (event, port) => {
+    const serverList = await scanNetwork(port)
     return serverList
   })
 
   ////////////////////// EVENTO ABRIR SERVER ///////////////////////
-  ipcMain.handle('open-server', async (event, port = 8080) => {
+  ipcMain.handle('open-server', async (event, port) => {
     if (server) {
-      console.log('El servidor ya ha iniciado.')
+      return 'El servidor ya está en ejecución.'
     }
 
     server = net.createServer((socket) => {
@@ -58,30 +57,40 @@ function createWindow() {
       sendClientsToRenderer()
 
       socket.on('data', (data) => {
-        const parsedData = JSON.parse(data) // Asegúrate de procesar correctamente los datos
-        console.log(`Mensaje de ${clientId}: ${parsedData.hostname}`)
-
-        // Actualizar datos del cliente
-        clients.set(clientId, { socket, data: parsedData })
-        socket.write('Mensaje recibido\n')
-
-        // Envía datos al renderer
-        sendClientsToRenderer()
+        try {
+          const parsedData = JSON.parse(data)
+          console.log(`Mensaje de ${clientId}: ${parsedData.hostname}`)
+          clients.set(clientId, { socket, data: parsedData })
+          socket.write('Mensaje recibido\n')
+          sendClientsToRenderer()
+        } catch (error) {
+          console.error(`Error al procesar mensaje de ${clientId}:`, error)
+          socket.write('Error en el formato del mensaje\n')
+        }
       })
 
       socket.on('end', () => {
-        console.log('Cliente desconectado')
-
+        console.log(`Cliente desconectado: ${clientId}`)
         clients.delete(clientId)
         sendClientsToRenderer()
       })
     })
 
-    server.listen(port, () => {
-      console.log('Servidor TCP escuchando en el puerto ' + port)
+    server.on('error', (err) => {
+      console.error('Error en el servidor:', err)
     })
 
-    return 'Servidor iniciado correctamente en el puerto ' + port + '.'
+    server.listen(port, '0.0.0.0', () => {
+      console.log(`Servidor TCP escuchando en el puerto ${port}`)
+    })
+    /* 
+    console.log(
+      `Servidor corriendo en: ${server.address().address}:${
+        server.address().port
+      }`
+    ) */
+
+    return `Servidor iniciado correctamente en el puerto ${port}.`
   })
   /////////////////////// EVENTO CERRAR SERVER ///////////////////////
   ipcMain.handle('close-server', () => {
@@ -95,11 +104,11 @@ function createWindow() {
 
   /////////////////////// EVENTO ENVIAR INFORMACION ///////////////////////
   ipcMain.handle('send-info', async (event, server, port) => {
-    sendInfo(server, counter)
+    sendInfo(server, counter, port)
     counter++
   })
   ipcMain.handle('close-connection', async (event, server, port) => {
-    closeConnection(server)
+    closeConnection(server, port)
   })
   /////////////////////////////////////////////////////////////////////
   function sendClientsToRenderer() {
