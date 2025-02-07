@@ -15,18 +15,29 @@ function connectToServer(server, port) {
     console.log('Conexión establecida con el servidor')
   })
 
-  socket.on('error', (err) => {
-    console.error('Error en el socket:', err.message)
-    socket.destroy()
-    socket = null
-  })
-
   socket.on('close', () => {
-    console.log('Conexión cerrada por el servidor')
-    socket.destroy()
-    socket = null
+    if (socket) {
+      console.log('Conexión cerrada por el servidor')
+      socket.destroy()
+      socket = null
+    }
   })
 
+  socket.on('timeout', () => {
+    if (socket) {
+      console.log('Conexión cerrada por el servidor')
+      socket.destroy()
+      socket = null
+    }
+  })
+
+  socket.on('error', (err) => {
+    if (socket) {
+      console.error('Error en el socket:', err.message)
+      socket.destroy()
+      socket = null
+    }
+  })
   socket.connect(port, server)
   return socket
 }
