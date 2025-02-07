@@ -99,6 +99,7 @@ function createWindow() {
     }
     server.close()
     console.log('Servidor cerrado...')
+    server = null
     counter = 0
   })
 
