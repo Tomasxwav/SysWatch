@@ -42,7 +42,7 @@ function connectToServer(server, port) {
   return socket
 }
 
-ipcMain.handle('send-info', async (event, server, counter, port) => {
+export const sendInfo = async (server, counter, port) => {
   try {
     const currentSocket = connectToServer(server, port)
 
@@ -58,14 +58,16 @@ ipcMain.handle('send-info', async (event, server, counter, port) => {
       currentSocket.write(JSON.stringify(hardware))
 
       // Retornamos un valor para indicar éxito.
+      return { success: true }
     } else {
       throw new Error('El socket está destruido o no se pudo conectar')
     }
   } catch (error) {
     console.error('Error en sendInfo:', error)
+    // Lanzamos el error para que lo capture el renderer y se realice un nuevo escaneo
     throw error
   }
-})
+}
 
 export const closeConnection = (server, port) => {
   const currentSocket = connectToServer(server, port)
