@@ -97,10 +97,22 @@ function createWindow() {
     if (!server) {
       return 'El servidor ya está cerrado.'
     }
-    server.close()
-    console.log('Servidor cerrado...')
-    server = null
-    counter = 0
+
+    clients.forEach(({ socket }, clientId) => {
+      console.log(`Desconectando cliente: ${clientId}`)
+      socket.end('El servidor se está cerrando...\n')
+      socket.destroy()
+    })
+
+    clients.clear()
+
+    server.close(() => {
+      console.log('Servidor cerrado correctamente.')
+      server = null
+      counter = 0
+    })
+
+    return 'Servidor cerrándose...'
   })
 
   /////////////////////// EVENTO ENVIAR INFORMACION ///////////////////////
