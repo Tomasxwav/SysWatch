@@ -42,26 +42,30 @@ function connectToServer(server, port) {
   return socket
 }
 
-export const sendInfo = (server, counter, port) => {
-  const currentSocket = connectToServer(server, port)
+ipcMain.handle('send-info', async (event, server, counter, port) => {
+  try {
+    const currentSocket = connectToServer(server, port)
 
-  if (currentSocket && !currentSocket.destroyed) {
-    const hardware = {
-      hostname: os.hostname(),
-      osInfo: os.type(),
-      memory: os.totalmem(),
-      cpu: os.cpus()[0].model,
-      cpuspeed: os.cpus()[0].speed,
-      score: counter,
+    if (currentSocket && !currentSocket.destroyed) {
+      const hardware = {
+        hostname: os.hostname(),
+        osInfo: os.type(),
+        memory: os.totalmem(),
+        cpu: os.cpus()[0].model,
+        cpuspeed: os.cpus()[0].speed,
+        score: counter,
+      }
+      currentSocket.write(JSON.stringify(hardware))
+
+      // Retornamos un valor para indicar éxito.
+    } else {
+      throw new Error('El socket está destruido o no se pudo conectar')
     }
-
-    currentSocket.write(JSON.stringify(hardware))
-  } else {
-    console.error(
-      'No se pudo enviar la información porque el socket está destruido'
-    )
+  } catch (error) {
+    console.error('Error en sendInfo:', error)
+    throw error
   }
-}
+})
 
 export const closeConnection = (server, port) => {
   const currentSocket = connectToServer(server, port)

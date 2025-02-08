@@ -50,10 +50,20 @@ function App() {
     let interval: ReturnType<typeof setInterval> | null = null // Intervalo para enviar información a los servidores
 
     if (servers.length > 0) {
-      interval = setInterval(() => {
-        window.electron.sendInfo(servers[0], PORT)
-        console.log('intervalo ' + cont)
-        cont++
+      interval = setInterval(async () => {
+        try {
+          // Intentamos enviar la información
+          await window.electron.sendInfo(servers[0], PORT)
+          console.log('Intervalo ' + cont)
+          cont++
+        } catch (error) {
+          console.error(
+            'No se pudo enviar la información, reescaneando la red:',
+            error
+          )
+          // eslint-disable-next-line react-hooks/exhaustive-deps
+          servers = []
+        }
       }, 3000)
     }
 
